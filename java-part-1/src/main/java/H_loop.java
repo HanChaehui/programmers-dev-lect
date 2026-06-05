@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class H_loop {
     // 구구단 2단부터 9단까지
     public static void practice1(){
@@ -43,10 +45,28 @@ public class H_loop {
             i++;
         }
     }
+    // 입력받아 합계 계산 무한 반복, 0 입력 시 종료
+    public static void practice5(){
+        Scanner sc = new Scanner(System.in);
+        while(true){
+            System.out.println("원하는 숫자를 입력하세요. (0 입력 시 종료)");
+            int num = sc.nextInt();
+            if (num == 0){
+                System.out.println("종료합니다.");
+                break;
+            }
+            int sum = 0;
+            for(int i = num; i >= 1; i--){
+                sum += i;
+            }
+            System.out.printf("sum = %d\n", sum);
+        }
+    }
     public static void main(String[] args){
-        practice1();
-        practice2();
-        practice3();
-        practice4();
+//        practice1();
+//        practice2();
+//        practice3();
+//        practice4();
+        practice5();
     }
 }
