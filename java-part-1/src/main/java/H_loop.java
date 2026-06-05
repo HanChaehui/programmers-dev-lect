@@ -62,11 +62,24 @@ public class H_loop {
             System.out.printf("sum = %d\n", sum);
         }
     }
+
+    public static void practice6(){
+        Scanner sc = new Scanner(System.in);
+        while(true){
+            System.out.println("[구구단] 출력을 원하는 단을 입력하세요. (0 입력 시 종료)");
+            int num = sc.nextInt();
+            if(num == 0) break;
+            for(int i = 1; i <= 9; i++){
+                System.out.printf("%d x %d = %d\n", num, i, num*i);
+            }
+        }
+    }
     public static void main(String[] args){
 //        practice1();
 //        practice2();
 //        practice3();
 //        practice4();
-        practice5();
+//        practice5();
+        practice6();
     }
 }
