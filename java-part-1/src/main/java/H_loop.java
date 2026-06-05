@@ -10,17 +10,17 @@ public class H_loop {
     }
     // continue: 1 ~ 100까지 짝수만 출력
     public static void practice2(){
-        System.out.println("");
+        System.out.println();
         for(int i = 1; i <= 100; i++){
             if(i % 2 == 1){
                 continue;
             }
             System.out.printf("%d ", i);
             if(i%10 == 0){
-                System.out.println("");
+                System.out.println();
             }
         }
-        System.out.println("");
+        System.out.println();
     }
     // break: 1 ~ 100까지 올라가는데, 30에 도달했을 때 멈춤(탈출)
     public static void practice3(){
@@ -31,9 +31,22 @@ public class H_loop {
             }
         }
     }
+    // while문 이용 구구단
+    public static void practice4(){
+        int i = 2;
+        while(i <= 9){
+            int j = 1;
+            while(j <= 9){
+                System.out.printf("%d x %d = %d\n", i, j, i*j);
+                j++;
+            }
+            i++;
+        }
+    }
     public static void main(String[] args){
         practice1();
         practice2();
         practice3();
+        practice4();
     }
 }
