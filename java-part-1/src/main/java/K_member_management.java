@@ -1,4 +1,3 @@
-import java.awt.image.ImagingOpException;
 import java.util.Scanner;
 
 public class K_member_management {
