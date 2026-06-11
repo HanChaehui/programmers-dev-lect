@@ -1,48 +1,78 @@
 
-// * 다형성
-// 동일한 인터페이스나 부모 클래스를 공유하는 여러 객체들이 각자 다른 방식으로 동작하도록 할 수 있는 기능을 말한다.
-// 다형성은 "하나의 인터페이스로 여러 형태의 객체를 처리할 수 있다"는 의미를 가지고 있다.
-// 이를 통해 코드의 유연성과 확장성을 크게 향상시킬 수 있다.
+// * 추상 클래스
+// 추상 클래스는 인스턴스화할 수 없는 클래스이다.
+// 즉, 추상클래 자체로 객체를 생성할 수 없으며, 반드시 이 클래스를 상속받은 자식 클래스를 통해서만 객체를 생성할 수 있다.
+// 추상 클래스는 추상 메서드뿐만 아니라 일반 메서드도 포함할 수 있으며, 필드(멤버 변수)를 가질 수도 있다.
 
-class K_animal {
-    // 부모클래스에서 정의된 메서드
-    public void sound() {
-        System.out.println("Animal sound");
+// * 추상 메서드
+// 추상 메서드는 메서드의 선언만 존재하고, 구현(메서드이 몸체)이 없는 메서드이다.
+// 추상 메서드는 추상 클래스 내에서 정의되며, 이 메서드를 상속받은 자식 클래스는 반드시 이 메서드를 오버라이딩하여 구현해야 한다.
+
+// * 요약
+// 추상 클래스 : 인스턴스화할 수 없으며, 공통된 속성이나 메서드를 정의하고, 일부 메서드는 자식 클래스에서 구현하도록 강제한다.
+// 추상 메서드 : 선언만 있고, 구현은 없으며, 반드시 자식 클래스에서 오버라이딩되어야 한다.
+
+// * 단점
+// 1. 상속의 제약
+// - 단일 상속의 제한
+// 자바는 단일 상속만 지원하므로, 한 클래스가 두 개 이상의 추상 클래스를 상속 받을 수 없다.
+// 이는 복잡한 다중 상속 구조를 만들고자 할 때 제약될 수 있다.
+// 이 경우 인터페이스를 사용해야 하지만, 인터페이스는 구현을 가질 수 없다는 다른 제약이 있다.
+// 2. 구현의 강제성
+// - 모든 자식 클래스에서 구현 강제
+// 추상 메서드를 상속받는 모든 자식 클래스는 해당 메서드를 반드시 구현해야 한다.
+// 때로는 모든 자식 클래스에서 동일한 메서드 구현이 필요하지 않을 수도 있다.
+// 이런 경우에도 모든 자식 클래스에서 해당 메서드를 구현해야 하는 부담이 있다.
+// 불필요한 오버라이딩이 발생할 수 있다.
+// 3. 추상 클래스의 유연성 부족
+// - 추상 클래스의 역할 중첩
+// 추상 클래스는 주로 공통 기능을 제공하기 위해 사용되지만, 때로는 이 공통 기능이 모든 하위 클래스에 적합하지 않을 수 있다.
+// 이 경우 추상 클래스가 불필요하게 많으 역할을 담당하게 되어 설계가 복잡해질 수 있다.
+// - 구현 상속의 어려움
+// 추상 클래스에서 공통 구현을 제공하는 것은 유용할 수 있지만,
+// 이는 동시에 코드 재사용을 강제하여 하위 클래스에서 원하지 않는 동작이 상속될 수도 있다.
+// 또한, 공통된 코드가 적절히 분리되지 않으면 추상 클래스의 유지보수가 어려워질 수 있다.
+
+
+
+abstract class L_animal {
+
+    // 추상 메서드 : 하위 클래스가 이 메서드를 구현해야함(오버라이딩, 재정의) -> 강제
+    abstract void makeSound();
+
+    // 일반 메서드 : 모든 하위 클래스에서 동일하게 동작함
+    void breathe() {
+        System.out.println("animal breathing");
     }
 }
 
-class K_dog extends K_animal {
-
-    public void fetch() {
-        System.out.println("Dog fetches a ball");
-    }
-
+class L_dog extends L_animal {
     @Override
-    public void sound() {
-        System.out.println("Dog sound");
+    void makeSound() {
+        System.out.println("dog sound");
     }
 }
 
-class K_cat extends K_animal {
-
+class L_cat extends L_animal {
     @Override
-    public void sound() {
-        System.out.println("Cat sound");
+    void makeSound() {
+        System.out.println("cat sound");
     }
 }
 
-public class K_polymorphism {
+public class L_abstract {
     static void main(String[] args) {
+        // 오류 : 추상 클래스는 인스턴스화할 수 없음
+//        L_animal temp = new L_animal();
 
-        K_animal myAnimal = new K_animal(); // K_animal 타입의 객체
-        K_animal myDog = new K_dog(); // Dog타입의 객체, Animal타입으로 업캐스팅
-        K_animal myCat = new K_cat(); // Cat타입의 객체, Animal타입으로 업캐스팅
+        L_animal dog = new L_dog();
+        L_animal cat = new L_cat();
 
-        myAnimal.sound();
-        myDog.sound(); // 런타임 시점에 Dog의 sound()호출
-        myCat.sound(); // 런타임 시점에 Cat의 sound()호출
+        dog.makeSound();
+        dog.breathe();
 
-        // 다운캐스팅을 통해 다시 Dog 타입으로 변환
-//        K_dog myDog2 = (K_dog) myAnimal;
+        cat.makeSound();
+        cat.breathe();
+
     }
 }
