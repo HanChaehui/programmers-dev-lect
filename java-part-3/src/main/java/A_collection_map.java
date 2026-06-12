@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class A_collections_map {
+public class A_collection_map {
 
     // 1. HashMap
     // 설명
