@@ -112,7 +112,7 @@ public class A_collections_list {
         list.add("apple");
         list.add(1, "banana");
 
-        list.removeLast();
+        ((LinkedList<String>) list).removeLast();
 
         // 해당 값을 인덱스로 가져온다.
         System.out.println(list.get(0));

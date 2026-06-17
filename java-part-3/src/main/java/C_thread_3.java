@@ -13,7 +13,7 @@ class C_thread_3_1 extends Thread{
             System.out.printf("%s ", "|");
         }
         long endTime = System.currentTimeMillis();
-        System.out.println("소요시간2 : " + (endTime - C_thread_3.startTime) + "ms");
+        System.out.println("thread-0 소요시간 : " + (endTime - C_thread_3.startTime) + "ms");
     }
 }
 
@@ -39,19 +39,22 @@ public class C_thread_3 {
     // - 멀티스레드
     public static void exam2() {
         C_thread_3_1 thread = new C_thread_3_1();
-        thread.start();
         startTime = System.currentTimeMillis();
+        thread.start();
         // main스레드가 출력
         for ( int i = 0; i < 300; i++ ) {
             System.out.printf("%s ", "-");
         }
         long endTime = System.currentTimeMillis();
-        System.out.println("소요시간1 : " + (endTime - startTime) + "ms");
+        System.out.println("main 스레드 소요시간 : " + (endTime - startTime) + "ms");
     }
 
-    static void main(String[] args) {
+    public static void main(String[] args) {
 
-        exam2();
+        // exam1(); // 메인스레드 하나가 - 출력 완료 후 | 출력, 순차 실행
+                 // 소요 시간 2개를 합친 시간만큼 소요
+        exam2(); // 메인 스레드의 - 출력과 새 스레드의 | 출력 섞임, 동시 실행
+                 // 두 소요 시간 중 더 긴 시간만큼 소요
 
     }
 }

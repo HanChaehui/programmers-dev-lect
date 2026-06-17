@@ -11,7 +11,8 @@ public class C_thread_4_daemon implements Runnable {
     static boolean autoSave = false;
 
     // 3초 마다 한 번씩 "자동저장이 켜져 있으면" 저장을 실행
-    // 데몬스레드라서 main이 끝나면 함께 자동 저장된다.
+    // 데몬 스레드라서 main 스레드가 끝나고 일반 스레드가 모두 종료되면,
+    // 자동 저장 스레드도 함께 종료된다.
     @Override
     public void run() {
         while (true) {
@@ -30,7 +31,7 @@ public class C_thread_4_daemon implements Runnable {
         System.out.println("작업 파일이 자동 저장되었습니다.");
     }
 
-    static void main(String[] args) {
+    public static void main(String[] args) {
         Thread thread = new Thread(new C_thread_4_daemon());
         thread.setDaemon(true);
         thread.start();

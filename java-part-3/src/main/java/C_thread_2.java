@@ -18,6 +18,7 @@
 class C_thread_2_1 extends Thread {
     @Override
     public void run() {
+        System.out.println("현재 스레드: " + Thread.currentThread().getName());
         System.out.println("th2_1 run()~~~~~");
         throwException();
     }
@@ -43,7 +44,7 @@ public class C_thread_2 {
         th2_1.run();
     }
 
-    static void main(String[] args) {
+    public static void main(String[] args) {
         exam2();
     }
 }
