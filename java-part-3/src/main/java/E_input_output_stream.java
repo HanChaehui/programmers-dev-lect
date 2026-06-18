@@ -23,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -52,7 +53,7 @@ public class E_input_output_stream {
         //   - Path 객체로 바꾸면 Files 클래스의 메서드(생성, 존재 확인, 삭제 등)에 넘길 수 있다
         //   - 또 getFileName(), getParent() 같은 경로 전용 기능도 쓸 수 있다
         // 참고: 자바 11 이상에서는 Path.of(folderPath)로 써도 동일하다
-        this.myFolder = Path.of(this.folderPath);
+        this.myFolder = Paths.get(this.folderPath);
     }
 
     // 1. 폴더 생성
@@ -187,28 +188,43 @@ public class E_input_output_stream {
     // 3. 파일 내용 일기 <-> exam2()의 짝
     //	•	FileInputStream으로 파일을 1바이트 단위로 읽어 들인다.
     //	•	읽은 byte 배열을 new String(...)으로 다시 문자열로 변환해야 사람이 읽을 수 있다.
+
+    // Java 9
+//    public void exam3() {
+//        today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+//        todayFile = myFolder.resolve(today + ".txt");
+//        if ( Files.exists(todayFile) ) {
+//            try ( FileInputStream fis = new FileInputStream(todayFile.toFile()) ) {
+//                byte[] bytes = fis.readAllBytes();
+//                String content = new String(bytes);
+//                System.out.println("내용 : "  + content);
+//            } catch (FileNotFoundException e) {
+//                throw new RuntimeException(e);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        } else {
+//            System.out.println("파일이 존재하지 않습니다.");
+//        }
+//    }
+    // JDK 8
     public void exam3() {
         today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         todayFile = myFolder.resolve(today + ".txt");
 
-        if ( Files.exists(todayFile) ) {
+        if (Files.exists(todayFile)) {
+            try (FileInputStream fis = new FileInputStream(todayFile.toFile())) {
+                byte[] bytes = new byte[(int) todayFile.toFile().length()];
+                fis.read(bytes);
 
-            try ( FileInputStream fis = new FileInputStream(todayFile.toFile()) ) {
-
-                byte[] bytes = fis.readAllBytes();
-                String content = new String(bytes);
-                System.out.println("내용 : "  + content);
-
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
+                String content = new String(bytes, "UTF-8");
+                System.out.println("내용 : " + content);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
         } else {
             System.out.println("파일이 존재하지 않습니다.");
         }
-
     }
 
     // 3-1. QR코드 이미지 읽기
