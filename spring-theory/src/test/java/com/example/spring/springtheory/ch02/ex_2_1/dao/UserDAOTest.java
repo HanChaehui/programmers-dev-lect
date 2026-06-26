@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 //      @Autowired가 붙은 필드에 맞는 타입의 빈(UserDAO)을 자동으로 꽂아준다(필드 주입).
 //   (애너테이션이 없으면 컨테이너가 없어 userDao가 null -> NullPointerException 발생)
 @SpringJUnitConfig(DaoFactory.class)
-class UserDAOTest {
+public class UserDAOTest {
 
     // @Autowired : 타입(UserDAO)이 일치하는 빈을 스프링이 찾아 이 필드에 주입해x준다.
     @Autowired // 더 이상 직접 new AnnotationConfigApplicationContext / getBean 을 호출할 필요가 없다.
