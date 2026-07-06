@@ -1,42 +1,44 @@
-package com.example.spring.springtheory.ch05.ex_5_1.service;
+package com.example.spring.springtheory.ch06.ex_6_4.service;
 
-import com.example.spring.springtheory.ch05.ex_5_1.dao.Level;
-import com.example.spring.springtheory.ch05.ex_5_1.dao.UserDAO;
-import com.example.spring.springtheory.ch05.ex_5_1.domain.User;
+import com.example.spring.springtheory.ch06.ex_6_4.dao.Level;
+import com.example.spring.springtheory.ch06.ex_6_4.dao.UserDAO;
+import com.example.spring.springtheory.ch06.ex_6_4.domain.User;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
 
-// * UserService - 사용자 레벨 관리 '비즈니스 로직'을 담는 계층
-
-// [업그레이드 규칙]
-//  - BASIC  + 로그인 50회 이상  -> SILVER
-//  - SILVER + 추천 30회 이상    -> GOLD
-//  - GOLD   -> 더 이상 업그레이드 없음
-public class UserService {
+public class UserServiceImpl implements UserService {
 
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
     public static final int MIN_RECOMMEND_FOR_GOLD = 30;
 
     private UserDAO userDAO;
 
-    public UserService(UserDAO userDAO) {
+    public UserServiceImpl(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 
     // 신규가입
+    @Override
     public void add(User user) throws SQLException, ClassNotFoundException {
         user.setLevel( Level.BASIC );
         userDAO.add(user);
     }
 
     // 업그레이드 담당
-    public void upgradeLevels() throws SQLException, ClassNotFoundException {
-        List<User> users = userDAO.getAll();
-        for ( User user : users ) {
-            if (canUpgrade(user)) {
-                upgradeLevel(user);
+    @Transactional
+    @Override
+    public void upgradeLevels() {
+        try {
+            List<User> users = userDAO.getAll();
+            for ( User user : users ) {
+                if ( canUpgrade(user) ) {
+                    upgradeLevel(user);
+                }
             }
+        } catch (Exception e) {
+            throw new RuntimeException("레벨 업그레이드 중 오류가 발생해 롤백했습니다.", e);
         }
 
     }
@@ -56,7 +58,7 @@ public class UserService {
         }
     }
 
-    // 실제 업그레드
+    // 실제 업그레이드
     protected void upgradeLevel(User user) throws SQLException, ClassNotFoundException {
         user.upgradeLevel();
         userDAO.update(user);
