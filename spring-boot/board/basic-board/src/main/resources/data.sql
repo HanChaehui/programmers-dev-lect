@@ -17,3 +17,7 @@ CREATE TABLE board (
                        file_path VARCHAR(255),
                        created DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+DESC board;
+DESC member;
+SELECT * FROM member;
