@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import java.util.List;
 public class BoardService {
 
     private final BoardListRepository boardListRepository;
+    private final FileService fileService;
 
     public List<Board> getBoardList(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id").descending());
@@ -33,6 +35,20 @@ public class BoardService {
 
     public int getTotalBoards() {
         return (int) boardListRepository.count();
+    }
+
+    @Transactional
+    public void saveBoard(String userId, String title, String content, MultipartFile file) {
+        String filePath = fileService.storeFile(file);
+
+        Board build = Board.builder()
+                .userId(userId)
+                .title(title)
+                .content(content)
+                .filePath(filePath)
+                .build();
+
+        boardListRepository.save(build);
     }
 
 }
