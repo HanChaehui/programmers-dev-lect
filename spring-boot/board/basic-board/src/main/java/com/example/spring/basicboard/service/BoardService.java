@@ -2,6 +2,8 @@ package com.example.spring.basicboard.service;
 
 import com.example.spring.basicboard.domain.entity.Board;
 import com.example.spring.basicboard.domain.repository.BoardListRepository;
+import com.example.spring.basicboard.dto.BoardDeleteRequestDto;
+import com.example.spring.basicboard.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -46,9 +49,23 @@ public class BoardService {
                 .title(title)
                 .content(content)
                 .filePath(filePath)
+                .created(LocalDateTime.now())
                 .build();
 
         boardListRepository.save(build);
     }
 
+    public Board getBoardDetail(long id) {
+        return boardListRepository.findById(id)
+                .orElseThrow( () -> new BoardNotFoundException("[BOARD] 게시글을 찾을 수 없습니다. id : " + id) );
+    }
+
+    @Transactional
+    public void deleteBoard(long id, BoardDeleteRequestDto dto) {
+        if(!boardListRepository.existsById(id)) {
+            throw new BoardNotFoundException("[BOARD] 삭제할 게시글을 찾을 수 없습니다. id : " + id);
+        }
+        boardListRepository.deleteById(id);
+        fileService.deleteFile(dto.getFilePath());
+    }
 }
