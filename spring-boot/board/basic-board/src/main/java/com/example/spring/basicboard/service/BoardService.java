@@ -1,11 +1,14 @@
 package com.example.spring.basicboard.service;
 
 import com.example.spring.basicboard.domain.entity.Board;
-import com.example.spring.basicboard.domain.repository.BoardListRepository;
+import com.example.spring.basicboard.domain.repository.BoardRepository;
 import com.example.spring.basicboard.dto.BoardDeleteRequestDto;
+import com.example.spring.basicboard.dto.BoardListItemResponseDto;
+import com.example.spring.basicboard.dto.BoardSearchRequestDto;
 import com.example.spring.basicboard.dto.BoardUpdateRequestDto;
 import com.example.spring.basicboard.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,7 +24,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class BoardService {
 
-    private final BoardListRepository boardListRepository;
+    private final BoardRepository boardRepository;
     private final FileService fileService;
 
     public List<Board> getBoardList(int page, int size) {
@@ -34,56 +37,63 @@ public class BoardService {
         // - getTotalPages() -> int : 전체 페이지 수
         // - isLast() -> boolean : 마지막 페이지 여부
         // 주의 : getContent()의 'content'는 Board 엔티티의 content가 아니다.
-        return boardListRepository.findAll(pageable).getContent();
+        return boardRepository.findAll(pageable).getContent();
     }
 
     public int getTotalBoards() {
-        return (int) boardListRepository.count();
+        return (int) boardRepository.count();
     }
 
-    // 인자 dto 방식으로 바꿔보기 혼자!!!!!!!!!!
     @Transactional
-    public void saveBoard(String userId, String title, String content, MultipartFile file) {
+    public void saveBoard( String userId, String title, String content, MultipartFile file ) {
+
         String filePath = fileService.storeFile(file);
 
-        Board build = Board.builder()
-                .userId(userId)
-                .title(title)
-                .content(content)
-                .filePath(filePath)
-                .created(LocalDateTime.now())
-                .build();
-
-        boardListRepository.save(build);
+        boardRepository.save(
+                Board.builder()
+                        .userId(userId)
+                        .title(title)
+                        .content(content)
+                        .filePath(filePath)
+                        .created(LocalDateTime.now())
+                        .build()
+        );
     }
 
     public Board getBoardDetail(long id) {
-        return boardListRepository.findById(id)
-                .orElseThrow( () -> new BoardNotFoundException("[BOARD] 게시글을 찾을 수 없습니다. id : " + id) );
+        return boardRepository.findById(id)
+                .orElseThrow( () -> new BoardNotFoundException("[BOARD] 게시글을 찾을 수 없습니다. id : " + id));
     }
 
     @Transactional
     public void updateBoard(long id, BoardUpdateRequestDto dto) {
-        Board board = boardListRepository.findById(id)
+        Board board = boardRepository.findById(id)
                 .orElseThrow(
                         () -> new BoardNotFoundException("[BOARD] 수정할 게시글을 찾을 수 없습니다. id : " + id)
                 );
 
         String filePath = board.getFilePath();
-        if(dto.isFileFlag()) { // 파일 변경이 있었을 경우
+        if ( dto.isFileFlag() ) { // 파일 변경이 있었을 경우
             fileService.deleteFile(filePath); // 기존 파일 삭제
             filePath = fileService.storeFile(dto.getFile()); // 새 파일 저장
         }
 
-        board.update(dto.getTitle(), dto.getContent(), filePath);
+        board.update( dto.getTitle(), dto.getContent(), filePath );
     }
 
     @Transactional
     public void deleteBoard(long id, BoardDeleteRequestDto dto) {
-        if(!boardListRepository.existsById(id)) {
+
+        if ( !boardRepository.existsById(id) ) {
             throw new BoardNotFoundException("[BOARD] 삭제할 게시글을 찾을 수 없습니다. id : " + id);
         }
-        boardListRepository.deleteById(id);
+
+        boardRepository.deleteById(id);
         fileService.deleteFile(dto.getFilePath());
     }
+
+    public Page<BoardListItemResponseDto> searchBoards(BoardSearchRequestDto dto, Pageable pageable) {
+        return boardRepository.searchBoards(dto, pageable);
+    }
+
 }
