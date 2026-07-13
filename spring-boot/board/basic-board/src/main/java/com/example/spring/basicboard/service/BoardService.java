@@ -3,6 +3,7 @@ package com.example.spring.basicboard.service;
 import com.example.spring.basicboard.domain.entity.Board;
 import com.example.spring.basicboard.domain.repository.BoardListRepository;
 import com.example.spring.basicboard.dto.BoardDeleteRequestDto;
+import com.example.spring.basicboard.dto.BoardUpdateRequestDto;
 import com.example.spring.basicboard.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -40,6 +41,7 @@ public class BoardService {
         return (int) boardListRepository.count();
     }
 
+    // 인자 dto 방식으로 바꿔보기 혼자!!!!!!!!!!
     @Transactional
     public void saveBoard(String userId, String title, String content, MultipartFile file) {
         String filePath = fileService.storeFile(file);
@@ -58,6 +60,22 @@ public class BoardService {
     public Board getBoardDetail(long id) {
         return boardListRepository.findById(id)
                 .orElseThrow( () -> new BoardNotFoundException("[BOARD] 게시글을 찾을 수 없습니다. id : " + id) );
+    }
+
+    @Transactional
+    public void updateBoard(long id, BoardUpdateRequestDto dto) {
+        Board board = boardListRepository.findById(id)
+                .orElseThrow(
+                        () -> new BoardNotFoundException("[BOARD] 수정할 게시글을 찾을 수 없습니다. id : " + id)
+                );
+
+        String filePath = board.getFilePath();
+        if(dto.isFileFlag()) { // 파일 변경이 있었을 경우
+            fileService.deleteFile(filePath); // 기존 파일 삭제
+            filePath = fileService.storeFile(dto.getFile()); // 새 파일 저장
+        }
+
+        board.update(dto.getTitle(), dto.getContent(), filePath);
     }
 
     @Transactional
