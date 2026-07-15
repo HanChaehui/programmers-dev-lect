@@ -1,7 +1,6 @@
 package com.example.spring.basicboard.controller;
 
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +24,7 @@ public class BoardController {
 
     @GetMapping("/detail")
     public String detail(
-            @RequestParam Long id,
+            @RequestParam("id") Long id,
             HttpSession session,
             Model model
     ) {
@@ -43,6 +42,12 @@ public class BoardController {
         setSession(session, model);
         model.addAttribute("id", id);
         return "/board-update";
+    }
+
+    @GetMapping("/stats")
+    public String stats(HttpSession session, Model model) {
+        setSession(session, model);
+        return "/board-stats";
     }
 
     private void setSession(HttpSession session, Model model) {

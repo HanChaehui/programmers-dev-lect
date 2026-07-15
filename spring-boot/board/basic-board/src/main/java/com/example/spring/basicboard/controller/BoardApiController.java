@@ -2,7 +2,7 @@ package com.example.spring.basicboard.controller;
 
 import com.example.spring.basicboard.domain.entity.Board;
 import com.example.spring.basicboard.dto.*;
-import com.example.spring.basicboard.exception.BoardNotFoundException;
+import com.example.spring.basicboard.mapper.BoardMapper;
 import com.example.spring.basicboard.service.BoardService;
 import com.example.spring.basicboard.service.FileService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,6 +45,7 @@ public class BoardApiController {
 
     private final BoardService boardService;
     private final FileService fileService;
+    private final BoardMapper boardMapper;
 
     @Operation(
             summary = "게시글 목록 조회",
@@ -170,7 +171,18 @@ public class BoardApiController {
     public void updateBoard(
             @Parameter(description = "수정할 게시글 id", example = "1")
             @PathVariable long id,
-            @RequestBody BoardUpdateRequestDto dto) {
+            @ModelAttribute BoardUpdateRequestDto dto) {
+        System.out.println("===== 수정 API 도착 =====");
+        System.out.println("id = " + id);
+        System.out.println("title = " + dto.getTitle());
+        System.out.println("content = " + dto.getContent());
+        System.out.println("fileFlag = " + dto.isFileFlag());
+        System.out.println("file = " + dto.getFile());
+
+        if (dto.getFile() != null) {
+            System.out.println("file empty = " + dto.getFile().isEmpty());
+            System.out.println("file name = " + dto.getFile().getOriginalFilename());
+        }
         boardService.updateBoard(id, dto);
     }
 
@@ -208,5 +220,30 @@ public class BoardApiController {
         return boardService.searchBoards(dto, pageable);
     }
 
+    @Operation(summary = "게시글 상세 + 댓글",
+            description = "게시글 한 건과 그에 달린 댓글 목록을 fetch join 으로 한 번에 조회한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "404", description = "해당 id 의 게시글이 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    })
+    @GetMapping("/{id}/with-comments")
+    public BoardWithCommentsResponseDto getBoardWithComments(
+            @Parameter(description = "조회할 게시글 id", example = "1")
+            @PathVariable long id
+    ) {
+        Board board = boardService.getBoardWithComments(id);
+        return boardMapper.toBoardWithCommentsResponseDto(board);
+    }
+
+    @Operation(summary = "작성자별 게시글 수 통계",
+    description = "작성별로 게시글 수를 집계하고(group by), minCount 편 이상 쓴 작성자만(having) 많이 쓴 순으로 내려준다.")
+    @GetMapping("/stats/authors")
+    public List<BoardAuthorStatsResponseDto> getAuthors(
+            @Parameter(description = "최소 게시글 수 (이 값 이상 쓴 작성자만)", example = "1")
+            @RequestParam(defaultValue = "1") long minCount
+    ) {
+        return boardService.getAuthorStats(minCount);
+    }
 
 }

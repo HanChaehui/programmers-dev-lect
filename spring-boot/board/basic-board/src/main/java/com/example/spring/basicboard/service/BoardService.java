@@ -2,10 +2,7 @@ package com.example.spring.basicboard.service;
 
 import com.example.spring.basicboard.domain.entity.Board;
 import com.example.spring.basicboard.domain.repository.BoardRepository;
-import com.example.spring.basicboard.dto.BoardDeleteRequestDto;
-import com.example.spring.basicboard.dto.BoardListItemResponseDto;
-import com.example.spring.basicboard.dto.BoardSearchRequestDto;
-import com.example.spring.basicboard.dto.BoardUpdateRequestDto;
+import com.example.spring.basicboard.dto.*;
 import com.example.spring.basicboard.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -94,6 +91,17 @@ public class BoardService {
 
     public Page<BoardListItemResponseDto> searchBoards(BoardSearchRequestDto dto, Pageable pageable) {
         return boardRepository.searchBoards(dto, pageable);
+    }
+
+    public Board getBoardWithComments(Long id) {
+        return boardRepository.findWithComments(id)
+                .orElseThrow(
+                        () -> new BoardNotFoundException("게시글을 찾을 수 없습니다. id = " + id)
+                );
+    }
+
+    public List<BoardAuthorStatsResponseDto> getAuthorStats(long minCount) {
+        return boardRepository.countBoardsByAuthor(minCount);
     }
 
 }
