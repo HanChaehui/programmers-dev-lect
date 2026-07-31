@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL) // ?
 public class TokenService {
 
     private final TokenProvider tokenProvider;
