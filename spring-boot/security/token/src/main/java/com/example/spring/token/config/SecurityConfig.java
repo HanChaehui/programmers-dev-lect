@@ -110,6 +110,7 @@ public class SecurityConfig {
                                 "/admin",
                                 "/api/users/login",
                                 "/api/users/join",
+                                "/api/users/logout",
                                 "/api/tokens/refresh",
 
                                 "/css/**",
