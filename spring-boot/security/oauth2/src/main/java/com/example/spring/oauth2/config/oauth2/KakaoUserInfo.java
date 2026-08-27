@@ -2,7 +2,7 @@ package com.example.spring.oauth2.config.oauth2;
 
 import java.util.Map;
 
-// record란? (Java 16+) : 필드 나열만 하면 나머지 상용구를 컴파일러가 다 써주는, 불편 데이터 전용 클래스이다.
+// record란? (Java 16+) : 필드 나열만 하면 나머지 상용구를 컴파일러가 다 써주는, 불변 데이터 전용 클래스이다.
 // 필드선언, 생성자, getter, equals/hashCode/toString까지 수십줄을 대신 해준다.
 // record인 이유 : 상태는 응답 맵 하나뿐인 불변 값 객체이고,
 // 컴포넌트 이름을 attributes로 지으면 인터페이스 attributes()가 자동 구현된다.

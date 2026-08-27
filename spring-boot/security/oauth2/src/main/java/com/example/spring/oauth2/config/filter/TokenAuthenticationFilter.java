@@ -62,8 +62,17 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else if ( status == TokenStatus.EXPIRED) {
                 log.warn("{}, Token is expired", requestURI);
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
+                // 1) /api/users/info <- 401
+                // 2) /api/tokens/refresh-token(access token 만료 상태) <- 401
+                // 여기서 401을 직접 응답하지 않는다.
+                // JWT 필터는 유효한 토큰이면 인증 객체를 SecurityContext에 넣고,
+                // 유효하지 않거나 만료된 토큰이면 그냥 인증 객체를 안 넣은 채 다음 필터로 넘기는 방식
+                // permitAll 경로는 통과시키고, 보호 경로는 SecurityConfig가 인증 실패로 처리하게 둔다.
+                // VALID이면 Authentication 저장
+                // EXPIRED/INVALID이면 Authentication 저장 안 함
+                // 그 후 판단은 SecurityConfig에게 맡김
+//                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//                return;
             }
         }
 
