@@ -1,4 +1,4 @@
-package com.example.spring.authservice.exception;
+package com.example.spring.boardservice.exception;
 
 public class DuplicateUserIdException extends RuntimeException {
     public DuplicateUserIdException(String message) {

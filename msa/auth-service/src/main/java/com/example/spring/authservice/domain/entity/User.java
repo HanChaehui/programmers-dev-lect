@@ -4,7 +4,6 @@ import com.example.spring.authservice.config.oauth2.AuthProvider;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -38,7 +37,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     @Builder.Default
-    private AuthProvider authProvider = AuthProvider.LOCAL;
+    private AuthProvider provider = AuthProvider.LOCAL;
 
     @Column(length = 100)
     private String providerId;

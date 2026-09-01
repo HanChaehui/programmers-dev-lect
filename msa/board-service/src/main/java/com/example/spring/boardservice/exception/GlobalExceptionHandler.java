@@ -1,6 +1,6 @@
-package com.example.spring.authservice.exception;
+package com.example.spring.boardservice.exception;
 
-import com.example.spring.authservice.dto.ErrorResponseDto;
+import com.example.spring.boardservice.dto.ErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

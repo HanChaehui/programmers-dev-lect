@@ -1,0 +1,10 @@
+# auth-service 전용 설정
+# 실제 값은 env로 주입
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID:055f4955ee34b22ff53bb08f6160a97d}
+            client-secret: JMtVmyNJk7jnHmDmiQ45ZGoTJVzBcceE

@@ -1,4 +1,4 @@
-package com.example.spring.authservice.dto;
+package com.example.spring.boardservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,8 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ErrorResponseDto {
-
     private int status;
     private String message;
-
 }

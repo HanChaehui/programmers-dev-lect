@@ -1,4 +1,7 @@
 package com.example.spring.boardservice.exception;
 
-public class BoardNotFoundException {
+public class BoardNotFoundException extends RuntimeException{
+    public BoardNotFoundException(String message) {
+        super(message);
+    }
 }
