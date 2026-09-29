@@ -48,10 +48,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         } else {
             // 미가입
             // 10분짜리 "가입 토큰"을 발급해 가입 동의 페이지로 보낸다.
-            String signUpToken = tokenProvider.createSignupToken(principal.getProvider(), principal.getUserInfo());
+            String signupToken = tokenProvider.createSignupToken(principal.getProvider(), principal.getUserInfo());
 
             targetUrl = UriComponentsBuilder.fromUriString(webServiceUrl + "/users/oauth-join")
-                    .queryParam("signUpToken", signUpToken)
+                    .queryParam("signUpToken", signupToken)
                     .build()
                     .toUriString();
         }
