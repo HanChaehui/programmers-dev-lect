@@ -1,11 +1,14 @@
 package com.example.spring.webservice.controller;
 
-import com.example.spring.webservice.dto.BoardPageResponseDto;
-import com.example.spring.webservice.dto.BoardSearchRequestDto;
+import com.example.spring.webservice.dto.*;
 import com.example.spring.webservice.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +27,64 @@ public class BoardApiController {
             @RequestParam(defaultValue = "10") int size
     ){
         return boardService.searchBoard(authorization, boardSearchRequestDto, page, size);
+    }
+
+    @GetMapping("/{id}/with-comments")
+    public BoardWithCommentsResponseDto getBoardWithComments(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+            @PathVariable long id
+    ) {
+        return boardService.getBoardWithComments(authorization, id);
+    }
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void saveBoard(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+            @ModelAttribute BoardWriteRequestDto dto
+    ) {
+        boardService.saveBoard(authorization, dto);
+    }
+
+    @GetMapping("/{id}")
+    public BoardDetailResponseDto getBoardDetail(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+            @PathVariable long id
+    ) {
+        return boardService.getBoardDetail(authorization, id);
+    }
+
+    @PutMapping("/{id}")
+    public void updateBoard(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+            @PathVariable long id,
+            @ModelAttribute BoardUpdateRequestDto dto
+    ) {
+        boardService.updateBoard(authorization, id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteBoard(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+            @PathVariable long id,
+            @RequestBody BoardDeleteRequestDto dto
+    ) {
+        boardService.deleteBoard(authorization, id, dto);
+    }
+
+    @GetMapping("/file/download/{fileName}")
+    ResponseEntity<byte[]> downloadFile(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+            @PathVariable String fileName
+    ) {
+        return boardService.downloadFile(authorization, fileName);
+    }
+
+    @GetMapping("/stats/authors")
+    public List<BoardAuthorStatsResponseDto> getAuthorStats(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+            @RequestParam(defaultValue = "1") long minCount
+    ) {
+        return boardService.getAuthorStats(authorization, minCount);
     }
 
 }

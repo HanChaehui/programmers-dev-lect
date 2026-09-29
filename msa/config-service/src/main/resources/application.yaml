@@ -9,7 +9,8 @@ spring:
     config:
       server:
         native:
-          search-locations: "file:///C:/Users/LG/OneDrive/사진/바탕 화면/dev_lecture/msa/config-repo/"
+          #search-locations: ${config.repo.path:file:///C:/Users/LG/OneDrive/사진/바탕 화면/dev_lecture/msa/config-repo/}
+          search-locations: ${config.repo.path:file://${user.home}/Desktop/lect/msa/config-repo}
 
 # curl localhost:8888/{서비스이름}/{프로필}
 # curl localhost:8888/auth-service/default
